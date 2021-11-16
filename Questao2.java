@@ -2,50 +2,56 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
 public class Questao2 {
 
-  public static void main(String args[]) throws IOException {
+  public static void main(String args[]) throws IOException, OutOfRangeException {
     
-  /*   System.out.println("Informe o arquivo com os dados: ");
+    System.out.println("Informe o arquivo com os dados: ");
     Scanner input = new Scanner(System.in);
     String value = input.next();
+    //FileInputStream stream = new FileInputStream(value);
+    //InputStreamReader reader = new InputStreamReader(stream);
+    BufferedReader br = new BufferedReader(new FileReader(value));
 
-    FileInputStream stream = new FileInputStream(value);
-    InputStreamReader reader = new InputStreamReader(stream);
-    BufferedReader br = new BufferedReader(reader);
-
-    int i;
     String br1;
+    String firstLine[] = new String[2];
     br1 = br.readLine();
+    firstLine = br1.split(" ");
 
-    System.out.println("Linha: " + br1);
 
-    while ((i = br.read()) != -1){
-
-      if((char)i != ' '){
-        parseArr = parseArr + (char)i;
-      } else {
-        numStr = Integer.parseInt(parseArr);
-        tamM.add(numStr);
-        parseArr = "";
-      }
-
-    } */
-
-    //=======================
-    int nVendedores = 4, lLigacoes = 6;
-    ArrayList<Integer> timeCall = new ArrayList<Integer>();
-    timeCall.add(5);
-    timeCall.add(2);
-    timeCall.add(3);
-    timeCall.add(3);
-    timeCall.add(4);
-    timeCall.add(9);
-    //=======================
-
-    int i, countEnd = 0;
+    int i, countEnd = 0, nVendedores, lLigacoes, parseArr;
     boolean loop = true;
+    String j;
+
+    ArrayList<Integer> ligacoesList = new ArrayList<Integer>();
+    nVendedores = Integer.parseInt(firstLine[0]);
+    lLigacoes = Integer.parseInt(firstLine[1]);
+    int intermed[] = new int[lLigacoes];
+
+    while ((j = br.readLine()) != null){
+      parseArr = Integer.parseInt(j);
+      ligacoesList.add(parseArr);
+    }
+
+    if(nVendedores < 1 || nVendedores > 1000) {
+      throw new OutOfRangeException();
+    }
+    if(lLigacoes < 1 || lLigacoes > 1000000) {
+      throw new OutOfRangeException();
+    }
+
+    //GAMBIARRA, ESSA PARTE PODE SER MELHORADA (inverter a lista de tempos de ligacao)
+    for(i=0; i<lLigacoes; i++){
+      intermed[i] = ligacoesList.remove( ligacoesList.size()-1 );
+      if(intermed[i] < 1 || intermed[i] > 30) {
+        throw new OutOfRangeException();
+      }
+    }
+    for(i=0; i<lLigacoes; i++){
+      ligacoesList.add(intermed[i]);
+    }
+    //========================================
+    
     ArrayList<Vendedores> vendedoresList = new ArrayList<Vendedores>();
 
     for(i=1; i<=nVendedores; i++){
@@ -54,27 +60,27 @@ public class Questao2 {
 
     while(loop == true) {
 
+      countEnd = 0;
+
       for(i=0; i<nVendedores; i++){
 
-        if( (!vendedoresList.get(i).getInCall()) && (!timeCall.isEmpty()) ){
-          vendedoresList.get(i).addCall( timeCall.remove( timeCall.size()-1 ) );
-          countEnd++;
-        }else if(vendedoresList.get(i).getInCall()){
+        if( vendedoresList.get(i).getInCall() ){
           vendedoresList.get(i).runningCall();
         }
 
-        /* if(vendedoresList.get(i).getInCall()){
-          vendedoresList.get(i).runningCall();
-        }else if((!vendedoresList.get(i).getInCall()) && (!timeCall.isEmpty())){
-          vendedoresList.get(i).addCall( timeCall.remove( timeCall.size()-1 ) );
+        if( (!vendedoresList.get(i).getInCall()) && (!ligacoesList.isEmpty()) ){
+          vendedoresList.get(i).addCall(ligacoesList.remove( ligacoesList.size()-1 ));
+          
+        } else if ((!vendedoresList.get(i).getInCall()) && (ligacoesList.isEmpty())){
           countEnd++;
-        } */
+
+        }
+
       }
 
       if(countEnd == nVendedores) {
         loop = false;
       }
-      countEnd = 0;
 
     }
 
@@ -83,9 +89,6 @@ public class Questao2 {
     System.out.println("");
 
     }
-
-
-
 
   }
 }
@@ -136,4 +139,3 @@ class Vendedores{
   }
 
 }
-

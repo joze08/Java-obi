@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Questao1 {
 
-  public static void main(String args[]) throws IOException {
+  public static void main(String args[]) throws IOException, OutOfRangeException {
 
     System.out.println("Informe o arquivo com os dados: ");
     Scanner input = new Scanner(System.in);
@@ -24,12 +24,22 @@ public class Questao1 {
     boolean aux = false;
     String parseArr = "";
 
+    if(numPes < 1 || numPes > 10000){
+      throw new OutOfRangeException();
+    }
+    if(sand < 1 || sand > 10000){
+      throw new OutOfRangeException();
+    }
+
     while ((i = br.read()) != -1){
 
       if((char)i != ' '){
         parseArr = parseArr + (char)i;
       } else {
         numStr = Integer.parseInt(parseArr);
+        if(numStr < 1 || numStr > 10000){
+          throw new OutOfRangeException();
+        }
         tamM.add(numStr);
         parseArr = "";
       }
@@ -61,3 +71,5 @@ public class Questao1 {
     System.out.printf("O tamanho do sanduiche eh de: %d cm", middle);
   }
 }
+
+
